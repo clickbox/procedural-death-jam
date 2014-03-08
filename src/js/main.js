@@ -3,7 +3,7 @@
 		function GameState() {};
 		GameState.prototype = {
 			preload: function() {
-		this.game.load.image('white', 'assets/img/white.png');
+				this.game.load.image('white', 'assets/img/white.png');
 			},
 
 			create: function() {
@@ -21,7 +21,7 @@
 				walls.setAll('body.immovable', true);
 				walls.forEach(function(wall) { wall.body.setRectangle(); });
 
-			//add in the player
+				//add in the player
 				var player = new Player(game, 200, 100);
 				game.add.existing(player);
 
@@ -33,7 +33,13 @@
 			update: function() {
 				var game = this.game;
 				game.physics.collide(this.player, this.walls);
-		}
+			},
+
+			render: function() {
+				var game = this.game;
+				game.debug.renderSpriteBounds(this.player, '#FF0000');
+				this.walls.forEach(function(wall) { game.debug.renderSpriteBody(wall); });
+			}
 		};
 
 		var game = new Phaser.Game(400, 400, Phaser.AUTO, 'game-container');
