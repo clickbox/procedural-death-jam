@@ -4,3 +4,7 @@
 	margin-right: auto;
 	width: 400px;
 };
+
+html, body {
+	background-color: #0073CF;
+};
