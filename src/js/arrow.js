@@ -14,7 +14,9 @@
 		this.player = player;
 
 		this.body.maxVelocity.setTo(Arrow.CHARGE_VEL, Arrow.CHARGE_VEL);
-		this.body.setRectangle(18, 32);
+		this.body.setRectangle(18, 32, 7, 0);
+		this.body.x = x;
+		this.body.y = y;
 		this.body.collideWorldBounds = true;
 	}
 
@@ -24,8 +26,8 @@
 
 	Arrow.WAKE_TIME = 300;
 	Arrow.SLEEP_TIME = 550;
-	Arrow.CHARGE_VEL = 450;
-	Arrow.CHARGE_ACCEL = 700;
+	Arrow.CHARGE_VEL = 650;
+	Arrow.CHARGE_ACCEL = 1200;
 
 	Arrow.prototype = Object.create(Phaser.Sprite.prototype);
 	Arrow.prototype.constructor = Arrow;

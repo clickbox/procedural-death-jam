@@ -3,10 +3,13 @@
 		function GameState() {};
 		GameState.prototype = {
 			preload: function() {
-				this.game.load.image('white', 'assets/img/white.png');
-
 				var game = this.game;
+
+				Player.preload(game);
 				Arrow.preload(game);
+
+				game.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
+				game.load.image('tiles', 'assets/img/tiles.png');
 			},
 
 			create: function() {
@@ -14,16 +17,11 @@
 
 				game.stage.backgroundColor = '6495ED';
 				
-				//make a wall around the outside
-				var world = game.add.group();
-				world.add(new Phaser.TileSprite(game, -2, -2, 404, 22, 'white'));
-				world.add(new Phaser.TileSprite(game, -2, -2, 22, 404, 'white'));
-				world.add(new Phaser.TileSprite(game, -2, 380, 404, 22, 'white'));
-				world.add(new Phaser.TileSprite(game, 380, -2, 22, 404, 'white'));
+				var board = game.add.tilemap('empty-board');
+				board.addTilesetImage('Walls','tiles');
+				board.setCollision(1);
 
-				world.setAll('body.immovable', true);
-				world.setAll('isWorld', true);
-				world.forEach(function(wall) { wall.body.setRectangle(); });
+				var layer = board.createLayer('Walls');
 
 				//add in the player
 				var player = new Player(game, 200, 100);
@@ -37,7 +35,7 @@
 				enemies.add(arrow2);
 
 				//export the "globals"
-				this.world = world;
+				this.world = layer;
 				this.enemies = enemies;
 				this.player = player;
 			},
@@ -54,12 +52,15 @@
 
 			render: function() {
 				var game = this.game;
-				game.debug.renderSpriteBounds(this.player, '#FF0000');
-				this.world.forEach(function(wall) { game.debug.renderSpriteBody(wall); });
+				game.debug.renderPhysicsBody(this.player.body);
+				this.enemies.forEach(function(enemy) {
+					game.debug.renderPhysicsBody(enemy.body);
+				})
+				//game.debug.renderSpriteBounds(this.player, '#FF0000');
 			}
 		};
 
-		var game = new Phaser.Game(400, 400, Phaser.AUTO, 'game-container');
+		var game = new Phaser.Game(400, 400, Phaser.CANVAS, 'game-container');
 		game.state.add('game', GameState);
 		game.state.start('game');
 	}

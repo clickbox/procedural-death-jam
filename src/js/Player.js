@@ -3,14 +3,16 @@
 
 	function Player(game, x, y) {
 		Phaser.Sprite.call(this, game, x, y, 'white');
+		this.anchor.setTo(0.5,0.5);
 		this.width = 10;
-		this.height = 10;	
-
+		this.height = 10;
+		
 		this.body.velocity.y = Player.VELOCITY;
 		this.dir = 'down';
 
+		this.body.setRectangle();
 		this.body.collideWorldBounds = true;
-		this.body.bounce.setTo(0.01,0.01);
+		this.body.bounce.setTo(0,0);
 
 		this.controls = {
 			velocity: new Phaser.Point()
@@ -40,6 +42,10 @@
 		keyboard.addKeyCapture([Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT]);
 	}
 
+	Player.preload = function(game) {
+		game.load.image('white', 'assets/img/white.png');
+	}
+
 	Player.prototype = Object.create(Phaser.Sprite.prototype);
 	Player.prototype.constructor = Player;
 
@@ -48,7 +54,7 @@
 	Player.prototype.update = function() {
 		this.body.velocity.copyFrom(this.controls.velocity);
 		this.body.velocity.setMagnitude(Player.VELOCITY);
-}
+	}
 
 	function onUp() {
 		if(this.dir != 'down') {
@@ -65,15 +71,13 @@
 	}
 
 	function onLeft() {
-		console.log('left');
-		if(this.dir != 'right') {
+	if(this.dir != 'right') {
 			this.controls.velocity.setTo(-1, 0);
 			this.dir = 'left';
 		}
 	}
 
 	function onRight() {
-		console.log('right');
 		if(this.dir != 'left') {
 			this.controls.velocity.setTo(1, 0);
 			this.dir = 'right';
