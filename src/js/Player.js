@@ -3,10 +3,10 @@
 
 	function Player(game, x, y) {
 		Phaser.Sprite.call(this, game, x, y, 'player');
-	this.anchor.setTo(0.5,0.5);
+		this.anchor.setTo(0.5,0.5);
 	
-		this.body.velocity.y = Player.VELOCITY;
-		this.dir = 'down';
+		this.animations.add('cycle', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 30, true);
+		this.animations.play('cycle');
 
 		this.body.setRectangle(undefined, undefined, 0, 0);
 		this.body.collideWorldBounds = true;
@@ -14,6 +14,7 @@
 		this.body.collideCallbackContext = this;
 		this.body.bounce.setTo(0,0);
 
+		this.dir = 'down';
 		this.controls = {
 			velocity: new Phaser.Point()
 		};
@@ -43,7 +44,7 @@
 	}
 
 	Player.preload = function(game) {
-		game.load.image('player', 'assets/img/player.png');
+		game.load.spritesheet('player', 'assets/spritesheet/player.png', 10, 10);
 	}
 
 	Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -57,7 +58,7 @@
 	}
 
 	Player.prototype.collideCallback = function(dir, thisBody, thatBody) {
-		console.log('it worked');
+		console.log('player collided');
 	}
 
 	function onUp() {

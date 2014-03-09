@@ -6,6 +6,7 @@
 				var game = this.game;
 
 				Player.preload(game);
+				Coin.preload(game);
 				Arrow.preload(game);
 
 				game.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
@@ -15,7 +16,7 @@
 			create: function() {
 				var game = this.game;
 
-				game.stage.backgroundColor = '#6495ED';
+			game.stage.backgroundColor = '#6495ED';
 				
 				var board = game.add.tilemap('empty-board');
 				board.addTilesetImage('Walls','tiles');
@@ -24,7 +25,7 @@
 				var layer = board.createLayer('Walls');
 
 				//add in the player
-				var player = new Player(game, 200, 100);
+				var player = new Player(game, 200, 200);
 				game.add.existing(player);
 
 				var enemies = game.add.group();
@@ -32,27 +33,38 @@
 				enemies.add( new Arrow(game, 370, 150, 'left', player));
 				enemies.add( new Arrow(game, 30, 250, 'right', player));
 				enemies.add( new Arrow(game, 370, 350, 'left', player));
-				//enemies.add( new Arrow(game, 100, 30, 'down', player));
+
+				//add in the coins
+				var coins = new CoinGroup(game);
+				coins.col(80, 40, 360);
+				coins.col(320, 40, 360);
+
 				//export the "globals"
 				this.world = layer;
 				this.enemies = enemies;
+				this.coins = coins;
 				this.player = player;
 			},
 
 			update: function() {
 				var game = this.game;
 				var world = this.world;
+				var player = this.player;
 
 				game.physics.collide(this.player, this.world);
 				this.enemies.forEach(function(enemy) {
 					game.physics.collide(enemy, world, enemy.collideWorld, null, enemy);
+				});
+				
+				game.physics.overlap(player, this.coins, function(player, coin) {
+					coin.kill();
 				});
 			},
 
 			render: function() {
 				var game = this.game;
 				//game.debug.renderPhysicsBody(this.player.body);
-				//this.enemies.forEach(function(enemy) {
+				//this.coins.forEach(function(enemy) {
 				//	game.debug.renderPhysicsBody(enemy.body);
 				//})
 				//game.debug.renderSpriteBounds(this.player, '#FF0000');
