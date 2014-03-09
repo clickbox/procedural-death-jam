@@ -15,7 +15,7 @@
 			create: function() {
 				var game = this.game;
 
-				game.stage.backgroundColor = '6495ED';
+				game.stage.backgroundColor = '#6495ED';
 				
 				var board = game.add.tilemap('empty-board');
 				board.addTilesetImage('Walls','tiles');
@@ -28,12 +28,11 @@
 				game.add.existing(player);
 
 				var enemies = game.add.group();
-				var arrow1 = new Arrow(game, 50, 50, 'right', player);
-				var arrow2 = new Arrow(game, 350, 150, 'left', player);
-
-				enemies.add(arrow1);
-				enemies.add(arrow2);
-
+				enemies.add( new Arrow(game, 30, 50, 'right', player));
+				enemies.add( new Arrow(game, 370, 150, 'left', player));
+				enemies.add( new Arrow(game, 30, 250, 'right', player));
+				enemies.add( new Arrow(game, 370, 350, 'left', player));
+				//enemies.add( new Arrow(game, 100, 30, 'down', player));
 				//export the "globals"
 				this.world = layer;
 				this.enemies = enemies;
@@ -52,10 +51,10 @@
 
 			render: function() {
 				var game = this.game;
-				game.debug.renderPhysicsBody(this.player.body);
-				this.enemies.forEach(function(enemy) {
-					game.debug.renderPhysicsBody(enemy.body);
-				})
+				//game.debug.renderPhysicsBody(this.player.body);
+				//this.enemies.forEach(function(enemy) {
+				//	game.debug.renderPhysicsBody(enemy.body);
+				//})
 				//game.debug.renderSpriteBounds(this.player, '#FF0000');
 			}
 		};

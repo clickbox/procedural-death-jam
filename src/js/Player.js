@@ -2,16 +2,16 @@
 	var keys = {};
 
 	function Player(game, x, y) {
-		Phaser.Sprite.call(this, game, x, y, 'white');
-		this.anchor.setTo(0.5,0.5);
-		this.width = 10;
-		this.height = 10;
-		
+		Phaser.Sprite.call(this, game, x, y, 'player');
+	this.anchor.setTo(0.5,0.5);
+	
 		this.body.velocity.y = Player.VELOCITY;
 		this.dir = 'down';
 
-		this.body.setRectangle();
+		this.body.setRectangle(undefined, undefined, 0, 0);
 		this.body.collideWorldBounds = true;
+		this.body.collideCallback = this.collideCallback;
+		this.body.collideCallbackContext = this;
 		this.body.bounce.setTo(0,0);
 
 		this.controls = {
@@ -43,17 +43,21 @@
 	}
 
 	Player.preload = function(game) {
-		game.load.image('white', 'assets/img/white.png');
+		game.load.image('player', 'assets/img/player.png');
 	}
 
 	Player.prototype = Object.create(Phaser.Sprite.prototype);
 	Player.prototype.constructor = Player;
 
-	Player.VELOCITY = 175;
+	Player.VELOCITY = 200;
 
 	Player.prototype.update = function() {
 		this.body.velocity.copyFrom(this.controls.velocity);
 		this.body.velocity.setMagnitude(Player.VELOCITY);
+	}
+
+	Player.prototype.collideCallback = function(dir, thisBody, thatBody) {
+		console.log('it worked');
 	}
 
 	function onUp() {

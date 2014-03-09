@@ -68,8 +68,8 @@
 		switch(this.facing) {
 			case 'left': this.body.acceleration.setTo(-1, 0); break;
 			case 'right': this.body.acceleration.setTo(1, 0); break;
-			case 'up': this.body.acceleration.setTo(0, -1);   break;
-			case 'down': this.body.acceleration.setTo(0, 1);  break;
+			case 'up': this.body.acceleration.setTo(0, 1);   break;
+			case 'down': this.body.acceleration.setTo(0, -1);  break;
 		}
 		this.body.acceleration.setMagnitude(Arrow.CHARGE_ACCEL);
 
@@ -109,11 +109,11 @@
 				this.facing = 'right';
 				break;
 			case 'up':
-				this.angle = 90;
+				this.angle = 270;
 				this.facing = 'up';
 				break;
 			case 'down':
-				this.angle = 270;
+				this.angle = 90;
 				this.facing = 'down';
 				break;
 			default: 
