@@ -6,26 +6,22 @@
 	Preloader.prototype = {
 		preload: function() {
 			// setup preloading graphic
-			this.loadingBar = this.add.sprite(200, 200, 'loading-bar');
-			this.loadingBar.anchor.setTo(0.5, 0.5);
-			var overlay = this.add.sprite(200, 200, 'loading-bar-overlay');
-			overlay.anchor.setTo(0.5, 0.5);
-			
+			this.loadingBar = this.add.sprite(100, 180, 'loading-bar');
+			this.overlay = this.add.sprite(98, 176, 'loading-bar-overlay');
+
 			this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 			this.load.setPreloadSprite(this.loadingBar);
 
-			Arrow.preload(this);
-			Coin.preload(this);
-			Player.preload(this);
+			Arrow.preload(this.game);
+			Coin.preload(this.game);
+			Player.preload(this.game);
 
-			this.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
-			this.load.image('tiles', 'assets/img/tiles.png');
+			this.game.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
+			this.game.load.image('tiles', 'assets/img/tiles.png');
 		},
 
 		create: function() {
-			this.loadingBarCropEnabled = false;
-
-			this.game.stage.backgroundColor = '#000000';
+			this.game.stage.backgroundColor = '#6495ED';
 		},
 
 		update: function() {

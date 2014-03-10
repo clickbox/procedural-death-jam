@@ -2,7 +2,7 @@
 	function Game() {}
 
 	Game.prototype = { 
-		preload: function() {
+		  preload: function() {
 			var game = this.game;
 
 			Player.preload(game);
@@ -72,8 +72,8 @@
 			var game = this.game;
 			//game.debug.renderPhysicsBody(this.player.body);
 			//this.coins.forEach(function(enemy) {
-			//	game.debug.renderPhysicsBody(enemy.body);
-			//})
+		  //	game.debug.renderPhysicsBody(enemy.body);
+		  //});
 			//game.debug.renderSpriteBounds(this.player, '#FF0000');
 		}
 	};
