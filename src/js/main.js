@@ -16,7 +16,7 @@
 			create: function() {
 				var game = this.game;
 
-			game.stage.backgroundColor = '#6495ED';
+				game.stage.backgroundColor = '#6495ED';
 				
 				var board = game.add.tilemap('empty-board');
 				board.addTilesetImage('Walls','tiles');
@@ -36,6 +36,10 @@
 
 				//add in the coins
 				var coins = new CoinGroup(game);
+				var sounds = {
+					pickupCoin: game.add.audio('pickup-coin')
+				};
+
 				coins.col(80, 40, 360);
 				coins.col(320, 40, 360);
 
@@ -44,6 +48,7 @@
 				this.enemies = enemies;
 				this.coins = coins;
 				this.player = player;
+				this.sounds = sounds;
 			},
 
 			update: function() {
@@ -55,9 +60,11 @@
 				this.enemies.forEach(function(enemy) {
 					game.physics.collide(enemy, world, enemy.collideWorld, null, enemy);
 				});
-				
+			
+				var sounds = this.sounds;	
 				game.physics.overlap(player, this.coins, function(player, coin) {
 					coin.kill();
+					sounds.pickupCoin.play();
 				});
 			},
 

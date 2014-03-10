@@ -16,6 +16,7 @@
 
 	Coin.preload = function(game) {
 		game.load.image('coin', 'assets/img/coin.png');
+		game.load.audio('pickup-coin', ['assets/audio/pickup_coin.mp3', 'assets/audio/pickup_coin.ogg']);
 	}
 
 	Coin.prototype = Object.create(Phaser.Sprite.prototype);

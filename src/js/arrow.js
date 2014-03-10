@@ -18,10 +18,17 @@
 		this.body.x = x;
 		this.body.y = y;
 		this.body.collideWorldBounds = true;
+
+		this.sounds = {
+			playerSpotted: game.add.audio('player-spotted'),
+			wallSlam: game.add.audio('wall-slam')
+		};
 	}
 
 	Arrow.preload = function(game) {
 		game.load.spritesheet('arrow', 'assets/spritesheet/arrow.png', 32, 32);
+		game.load.audio('player-spotted', ['assets/audio/player_spotted.mp3', 'assets/audio/player_spotted.ogg']);
+		game.load.audio('wall-slam', ['assets/audio/wallslam.mp3', 'assets/audio/wallslam.ogg'])
 	}
 
 	Arrow.WAKE_TIME = 300;
@@ -56,6 +63,7 @@
 
 	Arrow.prototype.wakeUp = function() {
 		this.animations.play('waking');
+		this.sounds.playerSpotted.play();
 		this.state = 'waking-up';
 		this.game.time.events.add(Arrow.WAKE_TIME, this.wokenUp, this);
 	}
@@ -80,6 +88,7 @@
 		this.body.acceleration.setTo(0,0);
 		this.body.velocity.setTo(0,0);
 		this.animations.play('asleep');
+		this.sounds.wallSlam.play();
 		this.state = 'falling-asleep';
 		this.game.time.events.add(Arrow.SLEEP_TIME, this.fallenAsleep, this);
 	}
