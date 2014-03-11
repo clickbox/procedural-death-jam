@@ -2,15 +2,8 @@
 	function Game() {}
 
 	Game.prototype = { 
-		  preload: function() {
-			var game = this.game;
-
-			Player.preload(game);
-			Coin.preload(game);
-			Arrow.preload(game);
-
-			game.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
-			game.load.image('tiles', 'assets/img/tiles.png');
+		preload: function() {
+			this.game.load.image('coin', 'assets/img/coin.png');
 		},
 
 		create: function() {
@@ -18,54 +11,49 @@
 
 			game.stage.backgroundColor = '#6495ED';
 			
-			var board = game.add.tilemap('empty-board');
-			board.addTilesetImage('Walls','tiles');
-			board.setCollision(1);
-
-			var layer = board.createLayer('Walls');
-
-			//add in the player
-			var player = new Player(game, 200, 200);
-			game.add.existing(player);
-
-			var enemies = game.add.group();
-			enemies.add( new Arrow(game, 30, 50, 'right', player));
-			enemies.add( new Arrow(game, 370, 150, 'left', player));
-			enemies.add( new Arrow(game, 30, 250, 'right', player));
-			enemies.add( new Arrow(game, 370, 350, 'left', player));
-
-			//add in the coins
-			var coins = new CoinGroup(game);
-			var sounds = {
+		 	this.sounds = {
 				pickupCoin: game.add.audio('pickup-coin')
 			};
 
-			coins.col(80, 40, 360);
-			coins.col(320, 40, 360);
+			// create the coin group
+			this.world = game.add.group();
+			this.coins = new CoinGroup(game);
+			this.threats = game.add.group();
+			this.player = new Player(game, 200, 200);
+			game.add.existing(this.player);
 
-			//export the "globals"
-			this.world = layer;
-			this.enemies = enemies;
-			this.coins = coins;
-			this.player = player;
-			this.sounds = sounds;
+			this.createLevel(sample_level);
 		},
 
 		update: function() {
-			var game = this.game;
-			var world = this.world;
-			var player = this.player;
+			var game = this.game,
+				player = this.player,
+				threats = this.threats;
 
-			game.physics.collide(this.player, this.world);
-			this.enemies.forEach(function(enemy) {
-				game.physics.collide(enemy, world, enemy.collideWorld, null, enemy);
+			//player -> world
+			_.forEach(this.walls, function(wall) {
+				game.physics.collide(player, wall, player.collideWorld, null, player);
+				threats.forEach(function(threat) {
+					game.physics.collide(threat, wall, threat.collideWorld, null, threat);
+				});
 			});
-		
-			var sounds = this.sounds;	
+
+			_.forEach(this.hazard, function(hazard) {
+				game.physics.collide(player, hazard);
+				game.physics.collide(threats, hazard);
+			});
+			
+			//player -> threats
+			game.physics.collide(player, threats);
+
+			// process player -> coin 	
 			game.physics.overlap(player, this.coins, function(player, coin) {
 				coin.kill();
-				sounds.pickupCoin.play();
-			});
+				this.sounds.pickupCoin.play();
+				if(this.coins.countLiving() == 0) { // Last coin collected
+					console.log('The level is complete');
+				}
+			}, null, this);
 		},
 
 		render: function() {
@@ -75,7 +63,54 @@
 		  //	game.debug.renderPhysicsBody(enemy.body);
 		  //});
 			//game.debug.renderSpriteBounds(this.player, '#FF0000');
+		},
+
+		createLevel: function(levelData) {
+			//clear existing data
+			this.walls = [];
+			this.hazards = [];
+			this.world.callAll('destroy');
+			this.threats.callAll('destroy');
+			this.coins.callAllExists('kill', false); //since we're keeping coins around
+
+			//create the tilemaps
+			if(levelData.world) {
+				var mapCache = {};
+				_.forEach(levelData.world, function(data) {
+					var key = data.key || 'empty-board',
+						name = data.name || 'Walls',
+						map = null;
+					
+					if(mapCache[key])
+						map = mapCache[key];
+					else {
+						map = new Phaser.Tilemap(this.game, key);
+						map.addTilesetImage('Walls','tiles');
+						map.setCollision(1);	
+					}
+
+					var layer = map.createLayer(name);
+					if(data.hazard)
+						this.hazards.push(layer);
+					else
+						this.walls.push(layer);
+				}, this);
+			}
+
+			//create threats
+			if(_.isFunction(levelData.threats)) {
+				var builder = new ThreatBuilder(this.player);
+				levelData.threats.call(builder);
+				_.forEach(builder.threats, this.threats.add, this.threats);
+			}
+
+			//place coins
+			if(_.isFunction(levelData.coins)) 
+				levelData.coins.call(this.coins)
+			
+			
 		}
+
 	};
 
 	exports.Game = Game;

@@ -130,7 +130,7 @@
 		}
 	}
 
-	Arrow.prototype.collideWorld = function(body, worldBody) {
+	Arrow.prototype.collideWorld = function(dir, body, worldBody) {
 		if(this.state == 'awake') {
 			this.fallAsleep();
 		}
