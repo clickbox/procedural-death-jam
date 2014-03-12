@@ -19,7 +19,12 @@
 			this.world = game.add.group();
 			this.coins = new CoinGroup(game);
 			this.threats = game.add.group();
+
+			//create the player
 			this.player = new Player(game, 200, 200);
+			this.player.events.onKilled.add(function() {
+
+			});
 			game.add.existing(this.player);
 
 			this.createLevel(sample_level);
@@ -38,13 +43,14 @@
 				});
 			});
 
-			_.forEach(this.hazard, function(hazard) {
+			//TODO add back in hazard support?
+			/* _.forEach(this.hazard, function(hazard) {
 				game.physics.collide(player, hazard);
 				game.physics.collide(threats, hazard);
-			});
+			});*/
 			
 			//player -> threats
-			game.physics.collide(player, threats);
+			game.physics.collide(player, threats, player.collideThreat, null, player); //TODO make this work both ways?
 
 			// process player -> coin 	
 			game.physics.overlap(player, this.coins, function(player, coin) {
