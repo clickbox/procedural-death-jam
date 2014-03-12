@@ -9,7 +9,7 @@
 		this.animations.play('cycle');
 
 		var emitter = this.game.add.emitter(0, 0, 25);
-		emitter.makeParticles('player-debris', [0,1,2,3,4,5,6,7,8,9,10,11], 75);
+		emitter.makeParticles('rainbow-debris', [0,1,2,3,4,5,6,7,8,9,10,11], 75);
 		emitter.maxRotation = 0;
 		emitter.maxParticleSpeed.setTo(400, 400); 
 		emitter.minParticleSpeed.setTo(-400, -400);
@@ -58,7 +58,7 @@
 
 	Player.preload = function(game) {
 		game.load.spritesheet('player', 'assets/spritesheet/player.png', 10, 10);
-		game.load.spritesheet('player-debris', 'assets/spritesheet/player_debris.png', 2, 2);
+		game.load.spritesheet('rainbow-debris', 'assets/spritesheet/rainbow_debris.png', 2, 2);
 		game.load.audio('player-killed', ['assets/audio/player_killed.mp3', 'assets/audio/player_killed.ogg']);
 	}
 

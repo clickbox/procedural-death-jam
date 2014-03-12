@@ -2,10 +2,6 @@
 	function Game() {}
 
 	Game.prototype = { 
-		preload: function() {
-			this.game.load.image('coin', 'assets/img/coin.png');
-		},
-
 		create: function() {
 			var game = this.game;
 
@@ -20,6 +16,15 @@
 			this.coins = new CoinGroup(game);
 			this.threats = game.add.group();
 
+			var emitter = game.add.emitter(0, 0, 100);
+			emitter.makeParticles('rainbow-debris', [0, 1, 2, 3, 4, 5, 6, 7, 8 , 9, 10]);
+			emitter.gravity = 0;
+			emitter.minParticleSpeed.setTo(-50, -50);
+			emitter.maxParticleSpeed.setTo(150, 150);
+			emitter.maxRotation = 0;
+			emitter.minRotation = 0;
+			this.coinEmitter = emitter;
+
 			//create the player
 			this.player = new Player(game, 200, 200);
 			this.player.events.onKilled.add(function() {
@@ -28,6 +33,16 @@
 			game.add.existing(this.player);
 
 			this.createLevel(sample_level);
+
+			//fade in w/ instructions TODO instructions
+			this.state = 'fading-in';
+			this.fadeFromBlack(0, 1000);
+
+			var input = this.input;
+			input.disabled = true;
+			this.time.events.add(300, function() {
+				input.disabled = false;
+			});
 		},
 
 		update: function() {
@@ -56,6 +71,9 @@
 			game.physics.overlap(player, this.coins, function(player, coin) {
 				coin.kill();
 				this.sounds.pickupCoin.play();
+				this.coinEmitter.x = coin.x;
+				this.coinEmitter.y = coin.y;
+				this.coinEmitter.start(true, 300, 0, 5);
 				if(this.coins.countLiving() == 0) { // Last coin collected
 					console.log('The level is complete');
 				}
@@ -113,10 +131,46 @@
 			//place coins
 			if(_.isFunction(levelData.coins)) 
 				levelData.coins.call(this.coins)
-			
-			
-		}
+		},
 
+		// (Number, Number) -> Phaser.Signal
+		fadeFromBlack: function(pause, fadein) {
+			if(pause === undefined) pause = 0;
+			if(fadein === undefined) fadein = 1000;
+
+			var fader = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'black'),
+			 	tween = this.add.tween(fader).to({ alpha: 0 }, fadein);
+
+			this.time.events.add(pause, tween.start, tween);
+
+			tween.onComplete.add(fader.destroy, fader);
+			return tween.onComplete;
+		},
+
+		// (Number, Number) -> Phaser.Signal
+		fadeToBlack: function(fadeout, pause) {
+			if(fadeout === undefined) fadeout = 1000;
+			if(pause === undefined) pause = 0;
+
+		var fader = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'black'),
+			signal = new Phaser.Signal(),
+			time = this.time;
+
+			fader.width = this.game.width;
+			fader.height = this.game.height;
+			fader.alpha = 0;
+
+			this.add.tween(fader).to({ alpha: 1 }, fadeout)
+				.start()
+				.onComplete(function() {
+					time.events.add(pause, function() {
+						fader.destroy();
+						signal.dispatch();
+					});
+				});
+
+			return signal;
+		}
 	};
 
 	exports.Game = Game;

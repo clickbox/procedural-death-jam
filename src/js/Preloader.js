@@ -1,7 +1,8 @@
 (function(exports) {
-	function Preloader() {
-		this.ready = false;
-	}
+	function Preloader() {}
+
+	Preloader.FADE_TIME = 750;
+	Preloader.DARK_TIME = 300;
 
 	Preloader.prototype = {
 		preload: function() {
@@ -15,23 +16,28 @@
 			Arrow.preload(this.game);
 			Coin.preload(this.game);
 			Player.preload(this.game);
-
-			this.game.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
-			this.game.load.image('tiles', 'assets/img/tiles.png');
+			
+			this.load.image('black', 'assets/img/black.png');
+			this.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
+			this.load.image('tiles', 'assets/img/tiles.png');
 		},
 
 		create: function() {
-			this.game.stage.backgroundColor = '#6495ED';
-		},
-
-		update: function() {
-			if(!!this.ready) {
-				this.game.state.start('game');
-			}
+			this.game.stage.backgroundColor = '#000000';
 		},
 
 		onLoadComplete: function() {
-			this.ready = true;
+			var time = this.time,
+				game = this.game;
+
+			this.add.tween(this.loadingBar).to({ alpha: 0 }, Preloader.FADE_TIME)
+				.start()
+				.onComplete.add(function() {
+					time.events.add(Preloader.DARK_TIME, function() {
+						game.state.start('game');
+					});
+				})
+			this.add.tween(this.overlay).to({ alpha: 0 }, Preloader.FADE_TIME).start();
 		}
 
 
