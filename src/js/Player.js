@@ -78,6 +78,8 @@
 		console.log('player collided');
 	}
 
+	//TODO collide world
+
 	Player.prototype.collideThreat = function(thisBody, threatBody) {
 		console.log('collided with threat');
 		this.sounds.killed.play();

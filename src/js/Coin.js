@@ -10,11 +10,6 @@
 		var body = this.body;
 		body.setRectangle(undefined, undefined, 0, 0);
 		body.setImmovable = true;
-		body.collideCallback = function(dir, myBody, other) { //for right now coins only ever collide with the player... 
-			console.log('coin collided');
-			this.kill();
-		};
-		body.collideCallbackContext = this;
 	}
 
 	Coin.preload = function(game) {

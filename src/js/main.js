@@ -3,6 +3,7 @@ window.onload = function() {
 	game.state.add('boot', Boot);
 	game.state.add('preloader', Preloader);
 	game.state.add('game', Game);
+	game.state.add('failure', Failure);
 	
 	game.state.start('boot');
 }

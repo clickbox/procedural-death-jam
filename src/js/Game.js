@@ -1,9 +1,16 @@
 (function(exports) {
-	function Game() {}
+	function Game() {
+		FadingState.call(this);
+	}
 
-	Game.prototype = { 
+	Game.prototype = Object.create(FadingState.prototype);
+	Game.prototype.constructor = Game;
+
+	_.extend(Game.prototype, { 
 		create: function() {
 			var game = this.game;
+
+			game.score = 0;
 
 			game.stage.backgroundColor = '#6495ED';
 			
@@ -29,14 +36,19 @@
 			//create the player
 			this.player = new Player(game, 200, 200);
 			this.player.events.onKilled.add(function() {
-
-			});
+			this.time.events.add(2000, function() {
+					this.fadeToBlack()
+						.onComplete.add(function() {
+							this.game.state.start('failure');
+						}, this);
+				}, this);
+			}, this);
 			game.add.existing(this.player);
 
 			//"procedurally" generate arena
 			this.createLevel(sample_level);
 
-			//TODO display instructions until key press
+			// display instructions until key press
 			var font = { font: '12px minecraftia', align: 'center'},
 				howToMove = this.add.bitmapText(200, 100, 'cursor keys to move', font),
 				whatToDo = this.add.bitmapText(200, 300, 'survive and collect', font); 
@@ -45,11 +57,10 @@
 			whatToDo.anchor.setTo(0.5, 0.5);
 			
 			this.player.events.onInput.addOnce(function() {
-				console.log('triggered!');
-				game.add.tween(howToMove).to({ alpha: 0 }, 350, Phaser.Easing.Cubic.In)
+				game.add.tween(howToMove).to({ alpha: 0 }, 550, Phaser.Easing.Cubic.In)
 					.start()
 					.onComplete.add(howToMove.destroy, howToMove);
-				game.add.tween(whatToDo).to({ alpha: 0 }, 350)
+				game.add.tween(whatToDo).to({ alpha: 0 }, 550, Phaser.Easing.Cubic.In)
 					.start()
 					.onComplete.add(whatToDo.destroy, whatToDo);
 			});
@@ -88,6 +99,7 @@
 
 			// process player -> coin 	
 			game.physics.overlap(player, this.coins, function(player, coin) {
+				this.game.score += 1;
 				coin.kill();
 				this.sounds.pickupCoin.play();
 				this.coinEmitter.x = coin.x;
@@ -150,47 +162,8 @@
 			//place coins
 			if(_.isFunction(levelData.coins)) 
 				levelData.coins.call(this.coins)
-		},
-
-		// (Number, Number) -> Phaser.Signal
-		fadeFromBlack: function(pause, fadein) {
-			if(pause === undefined) pause = 0;
-			if(fadein === undefined) fadein = 1000;
-
-			var fader = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'black'),
-			 	tween = this.add.tween(fader).to({ alpha: 0 }, fadein);
-
-			this.time.events.add(pause, tween.start, tween);
-
-			tween.onComplete.add(fader.destroy, fader);
-			return tween.onComplete;
-		},
-
-		// (Number, Number) -> Phaser.Signal
-		fadeToBlack: function(fadeout, pause) {
-			if(fadeout === undefined) fadeout = 1000;
-			if(pause === undefined) pause = 0;
-
-		var fader = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'black'),
-			signal = new Phaser.Signal(),
-			time = this.time;
-
-			fader.width = this.game.width;
-			fader.height = this.game.height;
-			fader.alpha = 0;
-
-			this.add.tween(fader).to({ alpha: 1 }, fadeout)
-				.start()
-				.onComplete(function() {
-					time.events.add(pause, function() {
-						fader.destroy();
-						signal.dispatch();
-					});
-				});
-
-			return signal;
 		}
-	};
+	});
 
 	exports.Game = Game;
 
