@@ -16,6 +16,7 @@
 			this.coins = new CoinGroup(game);
 			this.threats = game.add.group();
 
+			//TODO create a "rainbow emitter" subclass for this behavior
 			var emitter = game.add.emitter(0, 0, 100);
 			emitter.makeParticles('rainbow-debris', [0, 1, 2, 3, 4, 5, 6, 7, 8 , 9, 10]);
 			emitter.gravity = 0;
@@ -32,10 +33,28 @@
 			});
 			game.add.existing(this.player);
 
+			//"procedurally" generate arena
 			this.createLevel(sample_level);
 
-			//fade in w/ instructions TODO instructions
-			this.state = 'fading-in';
+			//TODO display instructions until key press
+			var font = { font: '12px minecraftia', align: 'center'},
+				howToMove = this.add.bitmapText(200, 100, 'cursor keys to move', font),
+				whatToDo = this.add.bitmapText(200, 300, 'survive and collect', font); 
+
+			howToMove.anchor.setTo(0.5, 0.5);
+			whatToDo.anchor.setTo(0.5, 0.5);
+			
+			this.player.events.onInput.addOnce(function() {
+				console.log('triggered!');
+				game.add.tween(howToMove).to({ alpha: 0 }, 350, Phaser.Easing.Cubic.In)
+					.start()
+					.onComplete.add(howToMove.destroy, howToMove);
+				game.add.tween(whatToDo).to({ alpha: 0 }, 350)
+					.start()
+					.onComplete.add(whatToDo.destroy, whatToDo);
+			});
+
+			//fade in to arena
 			this.fadeFromBlack(0, 1000);
 
 			var input = this.input;

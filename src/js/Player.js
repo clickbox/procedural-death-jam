@@ -27,10 +27,11 @@
 		//this.body.collideCallbackContext = this;
 		this.body.bounce.setTo(0,0);
 
-		this.dir = 'down';
+		this.dir = 'none';
 		this.controls = {
 			velocity: new Phaser.Point()
 		};
+		this.events.onInput = new Phaser.Signal();
 
 		var keyboard = game.input.keyboard;
 
@@ -62,10 +63,11 @@
 		game.load.audio('player-killed', ['assets/audio/player_killed.mp3', 'assets/audio/player_killed.ogg']);
 	}
 
+	Player.VELOCITY = 200;
+
 	Player.prototype = Object.create(Phaser.Sprite.prototype);
 	Player.prototype.constructor = Player;
 
-	Player.VELOCITY = 200;
 
 	Player.prototype.update = function() {
 		this.body.velocity.copyFrom(this.controls.velocity);
@@ -87,6 +89,7 @@
 
 	function onUp() {
 		if(this.dir != 'down') {
+			this.events.onInput.dispatch('up');
 			this.controls.velocity.setTo(0, -1);
 			this.dir = 'up';
 		}
@@ -94,6 +97,7 @@
 
 	function onDown() {
 		if(this.dir != 'up') {
+			this.events.onInput.dispatch('down');
 			this.controls.velocity.setTo(0, 1);
 			this.dir = 'down';
 		}	
@@ -101,6 +105,7 @@
 
 	function onLeft() {
 	if(this.dir != 'right') {
+			this.events.onInput.dispatch('left');
 			this.controls.velocity.setTo(-1, 0);
 			this.dir = 'left';
 		}
@@ -108,6 +113,7 @@
 
 	function onRight() {
 		if(this.dir != 'left') {
+			this.events.onInput.dispatch('right');
 			this.controls.velocity.setTo(1, 0);
 			this.dir = 'right';
 		}
