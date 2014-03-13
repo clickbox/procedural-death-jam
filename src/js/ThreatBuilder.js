@@ -16,14 +16,23 @@
 		bouncer: function(x, y) {
 			var bouncer = new Bouncer(this.game, x, y);
 			this.threats.push(bouncer);
-			
-			//bouncers should hold still until the player enters their first movement command
-			if(this.game.level == 0) 
-				this.player.events.onInput.addOnce(bouncer.start, bouncer);
-			else
-				bouncer.start();
-
+			this.holdForInput(bouncer);	
 			return bouncer;
+		},
+
+		chaser: function(x, y) {
+			var chaser = new Chaser(this.game, x, y, this.player);
+			this.threats.push(chaser);
+			this.holdForInput(chaser);
+			return chaser;
+		},
+
+		//utility
+		holdForInput: function(threat) {
+			if(this.game.level == 0) 
+				this.player.events.onInput.addOnce(threat.start, threat);
+			else
+				threat.start();
 		}
 	}
 

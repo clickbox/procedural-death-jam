@@ -16,6 +16,7 @@
 			//load game objects
 			Arrow.preload(this.game);
 			Bouncer.preload(this.game);
+			Chaser.preload(this.game);
 			Coin.preload(this.game);
 			Player.preload(this.game);
 
