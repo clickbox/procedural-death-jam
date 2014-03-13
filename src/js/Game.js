@@ -1,6 +1,10 @@
 (function(exports) {
 	function Game() {
 		FadingState.call(this);
+
+		this.events = {
+			onNextLevel: new Phaser.Signal()
+		};
 	}
 
 	Game.prototype = Object.create(FadingState.prototype);
@@ -14,14 +18,15 @@
 
 			game.stage.backgroundColor = '#6495ED';
 			
+
+			this.threats = game.add.group();
+
+			// create the coin group
+			this.coins = new CoinGroup(game);
+
 		 	this.sounds = {
 				pickupCoin: game.add.audio('pickup-coin')
 			};
-
-			// create the coin group
-			this.world = game.add.group();
-			this.coins = new CoinGroup(game);
-			this.threats = game.add.group();
 
 			//TODO create a "rainbow emitter" subclass for this behavior
 			var emitter = game.add.emitter(0, 0, 100);
@@ -45,8 +50,7 @@
 			}, this);
 			game.add.existing(this.player);
 
-			//"procedurally" generate arena
-			this.createLevel(sample_level);
+			this.nextLevel();
 
 			// display instructions until key press
 			var font = { font: '12px minecraftia', align: 'center'},
@@ -106,7 +110,7 @@
 				this.coinEmitter.y = coin.y;
 				this.coinEmitter.start(true, 300, 0, 5);
 				if(this.coins.countLiving() == 0) { // Last coin collected
-					console.log('The level is complete');
+					this.nextLevel();
 				}
 			}, null, this);
 		},
@@ -124,8 +128,8 @@
 			//clear existing data
 			this.walls = [];
 			this.hazards = [];
-			this.world.callAll('destroy');
-			this.threats.callAll('destroy');
+
+			this.threats.removeAll();
 			this.coins.callAllExists('kill', false); //since we're keeping coins around
 
 			//create the tilemaps
@@ -141,7 +145,10 @@
 					else {
 						map = new Phaser.Tilemap(this.game, key);
 						map.addTilesetImage('Walls','tiles');
-						map.setCollision(1);	
+						map.setCollision(1);
+						this.events.onNextLevel.addOnce(map.destroy, map);
+
+						mapCache[key] = map;
 					}
 
 					var layer = map.createLayer(name);
@@ -162,6 +169,13 @@
 			//place coins
 			if(_.isFunction(levelData.coins)) 
 				levelData.coins.call(this.coins)
+		},
+
+		nextLevel: function() {
+			this.events.onNextLevel.dispatch();
+
+			//"procedurally" generate arena
+			this.createLevel(sample_level);
 		}
 	});
 
