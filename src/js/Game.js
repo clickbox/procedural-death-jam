@@ -43,6 +43,7 @@
 			this.player = new Player(game, 200, 200);
 			this.player.events.onKilled.add(function() {
 			this.time.events.add(2000, function() {
+					this.trail.visible = false;
 					this.fadeToBlack()
 						.onComplete.add(function() {
 							this.game.state.start('failure');
@@ -50,6 +51,8 @@
 				}, this);
 			}, this);
 			game.add.existing(this.player);
+
+			this.trail = new AlphaTrail(game, this.player);
 
 			this.nextLevel();
 
@@ -114,14 +117,18 @@
 					this.nextLevel();
 				}
 			}, null, this);
+
+			this.trail.update();
 		},
 
 		render: function() {
 			var game = this.game;
 			//game.debug.renderPhysicsBody(this.player.body);
-			//this.threats.forEach(function(enemy) {
-			 // 	game.debug.renderPhysicsBody(enemy.body);
-		    //});
+			/*
+			this.threats.forEach(function(enemy) {
+			  	game.debug.renderPhysicsBody(enemy.body);
+		    });
+			*/
 			//game.debug.renderSpriteBounds(this.player, '#FF0000');
 		},
 
@@ -179,7 +186,7 @@
 			this.events.onNextLevel.dispatch();
 
 			//"procedurally" generate arena
-			this.createLevel(sample_level3);
+			this.createLevel(sample_level2);
 		}
 	});
 

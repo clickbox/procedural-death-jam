@@ -23,13 +23,11 @@
 			hazard: false
 		}],
 		threats: function() {
-			/*
 			this.bouncer(80, 80);
 			this.bouncer(80, 320);
 			this.bouncer(320, 80);
 			this.bouncer(320, 320);
-			*/
-			this.chaser(80, 80);
+			//this.chaser(80, 80);
 		},
 		coins: function() {
 			//this.col(80, 40, 360);

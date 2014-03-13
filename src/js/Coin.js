@@ -13,7 +13,7 @@
 	}
 
 	Coin.preload = function(game) {
-		game.load.spritesheet('coin', 'assets/spritesheet/coin.png', 4, 4);
+		game.load.spritesheet('coin', 'assets/spritesheet/coin.png', 4, 4, 12);
 		game.load.audio('pickup-coin', ['assets/audio/pickup_coin.mp3', 'assets/audio/pickup_coin.ogg']);
 	}
 

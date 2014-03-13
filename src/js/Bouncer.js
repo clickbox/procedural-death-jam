@@ -4,7 +4,7 @@
 		this.priority = _.uniqueId();
 
 		this.anchor.setTo(0.5, 0.5);
-		this.body.setCircle(10, 10, 10);
+		this.body.setCircle(10, 16, 16);
 		this.body.bounce.setTo(1, 1);
 		
 		this._initSpeed = Bouncer.speed[speed] || Bouncer.speed.slow;

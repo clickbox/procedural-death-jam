@@ -58,7 +58,7 @@
 	}
 
 	Player.preload = function(game) {
-		game.load.spritesheet('player', 'assets/spritesheet/player.png', 15, 15);
+		game.load.spritesheet('player', 'assets/spritesheet/player.png', 16, 16, 12);
 		game.load.spritesheet('rainbow-debris', 'assets/spritesheet/rainbow_debris.png', 2, 2);
 		game.load.audio('player-killed', ['assets/audio/player_killed.mp3', 'assets/audio/player_killed.ogg']);
 	}
