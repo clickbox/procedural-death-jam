@@ -35,6 +35,24 @@
 		} 
 	}
 
+	CoinGroup.prototype.arc = function(x, y, radius, start, end, gap) {
+		if(gap === undefined) gap = CoinGroup.DEFAULT_GAP;
+		if(start > end) {
+			var tmp = end;
+			end = start;
+			start =tmp;
+		}
+
+		var d_theta = gap / radius;
+		for(var theta = start; theta <= end; theta += d_theta) {
+			this.coinAt( x + Math.cos(theta) * radius, y + Math.sin(theta) * radius);
+		}
+	}
+
+	/*CoinGroup.prototype.angle = function(x, y, radius, start, end, gap) {
+		this.arc(x, y, radius, this.math.degToRad(start), this.math.degToRad(end), gap);
+	}*/
+
 	//TODO maybe add some logic to avoid stacking coins on top of each other?
 	CoinGroup.prototype.coinAt = function(x, y) {
 		var coin = this.getFirstExists(false);

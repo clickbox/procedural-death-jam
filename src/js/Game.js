@@ -14,6 +14,7 @@
 		create: function() {
 			var game = this.game;
 
+			game.level = -1;
 			game.score = 0;
 
 			game.stage.backgroundColor = '#6495ED';
@@ -118,9 +119,9 @@
 		render: function() {
 			var game = this.game;
 			//game.debug.renderPhysicsBody(this.player.body);
-			//this.coins.forEach(function(enemy) {
-		  //	game.debug.renderPhysicsBody(enemy.body);
-		  //});
+			//this.threats.forEach(function(enemy) {
+			 // 	game.debug.renderPhysicsBody(enemy.body);
+		    //});
 			//game.debug.renderSpriteBounds(this.player, '#FF0000');
 		},
 
@@ -172,10 +173,11 @@
 		},
 
 		nextLevel: function() {
+			this.game.level++;
 			this.events.onNextLevel.dispatch();
 
 			//"procedurally" generate arena
-			this.createLevel(sample_level);
+			this.createLevel(sample_level2);
 		}
 	});
 
