@@ -49,6 +49,7 @@
 		}
 	}
 
+
 	/*CoinGroup.prototype.angle = function(x, y, radius, start, end, gap) {
 		this.arc(x, y, radius, this.math.degToRad(start), this.math.degToRad(end), gap);
 	}*/

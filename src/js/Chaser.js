@@ -14,6 +14,7 @@
 	}
 
 	Chaser.CHASE_SPEED = 100;
+	Chaser.CHASE_SPEED_VAR = 50;
 
 	Chaser.prototype = Object.create(Phaser.Sprite.prototype);
 	Chaser.prototype.constructor = Chaser;
@@ -25,8 +26,11 @@
 	Chaser.prototype.update = function() {
 		//TODO requires something more sophisticated, with flocking behavior...
 		if(this.chasing) {
-			if(this.player.alive)
-				this.game.physics.moveToObject(this, this.player, Chaser.CHASE_SPEED);
+			if(this.player.alive) {
+				var speed = Chaser.CHASE_SPEED + Chaser.CHASE_SPEED_VAR * Math.sin(0.35 * this.time);
+				this.game.physics.moveToObject(this, this.player, speed);
+				this.time += this.game.time.totalElapsedSeconds() / 1000;
+			}
 		}
 	}
 

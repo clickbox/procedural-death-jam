@@ -16,23 +16,33 @@
 		bouncer: function(x, y) {
 			var bouncer = new Bouncer(this.game, x, y);
 			this.threats.push(bouncer);
-			this.holdForInput(bouncer);	
 			return bouncer;
 		},
 
+		//TODO make this enemy less bland-- and also make it work!
 		chaser: function(x, y) {
 			var chaser = new Chaser(this.game, x, y, this.player);
 			this.threats.push(chaser);
-			this.holdForInput(chaser);
 			return chaser;
 		},
 
-		//utility
-		holdForInput: function(threat) {
-			if(this.game.level == 0) 
-				this.player.events.onInput.addOnce(threat.start, threat);
+		patroller: function(x, y) {
+			var patroller = new Patroller(this.game, x, y);
+			this.threats.push(patroller);
+			return patroller;
+		},
+
+		start: function() {
+			if(this.game.level == 0)
+				this.player.events.onInput.addOnce(this.startNow, this);
 			else
-				threat.start();
+				this.startNow();
+		},
+
+		startNow: function() {
+			_(this.threats).forEach(function(threat) { 
+				if(threat.start) threat.start();
+			});
 		}
 	}
 

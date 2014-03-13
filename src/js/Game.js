@@ -89,7 +89,7 @@
 			_.forEach(this.walls, function(wall) {
 				game.physics.collide(player, wall, player.collideWorld, null, player);
 				threats.forEach(function(threat) {
-					game.physics.collide(threat, wall, threat.collideWorld, null, threat);
+					game.physics.collide(threat, wall, threat.collideWorld, threat.processWorld, threat);
 				});
 			});
 
@@ -160,16 +160,18 @@
 				}, this);
 			}
 
+			//place coins
+			if(_.isFunction(levelData.coins)) 
+				levelData.coins.call(this.coins)
+
 			//create threats
 			if(_.isFunction(levelData.threats)) {
 				var builder = new ThreatBuilder(this.player);
 				levelData.threats.call(builder);
 				_.forEach(builder.threats, this.threats.add, this.threats);
+				builder.start();
 			}
 
-			//place coins
-			if(_.isFunction(levelData.coins)) 
-				levelData.coins.call(this.coins)
 		},
 
 		nextLevel: function() {
@@ -177,7 +179,7 @@
 			this.events.onNextLevel.dispatch();
 
 			//"procedurally" generate arena
-			this.createLevel(sample_level2);
+			this.createLevel(sample_level3);
 		}
 	});
 

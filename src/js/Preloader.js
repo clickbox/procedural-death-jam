@@ -17,6 +17,7 @@
 			Arrow.preload(this.game);
 			Bouncer.preload(this.game);
 			Chaser.preload(this.game);
+			Patroller.preload(this.game);
 			Coin.preload(this.game);
 			Player.preload(this.game);
 
@@ -26,6 +27,7 @@
 
 			//TODO this is a level preloader thing...
 			this.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
+			this.load.tilemap('halls-open-top', 'assets/tilemap/southern_halls_open_top.json', null, Phaser.Tilemap.TILED_JSON);
 			this.load.image('tiles', 'assets/img/tiles.png');
 		},
 
