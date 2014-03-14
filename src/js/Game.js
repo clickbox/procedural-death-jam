@@ -7,9 +7,10 @@
 		};
 	}
 
-var MIN_TRAIL_ALPHA = 0.40;
-	var MAX_TRAIL_ALPHA = 0.96;
-	var MAX_TRAIL_AT_SCORE = 200; 
+	var MIN_TRAIL_ALPHA = 0.45,
+		MAX_TRAIL_ALPHA = 0.96,
+		MAX_TRAIL_AT_SCORE = 200; // this is low balling  it a bit
+								  // a linear easing is probably not right for this...
 
 	Game.prototype = Object.create(FadingState.prototype);
 	Game.prototype.constructor = Game;
@@ -138,61 +139,52 @@ var MIN_TRAIL_ALPHA = 0.40;
 			//game.debug.renderSpriteBounds(this.player, '#FF0000');
 		},
 
-		createLevel: function(levelData) {
+		createLevel: function(partials, grid) {
 			//clear existing data
 			this.walls = [];
-			this.hazards = [];
-
 			this.threats.removeAll();
 			this.coins.callAllExists('kill', false); //since we're keeping coins around
 
-			//create the tilemaps
-			if(levelData.world) {
-				var mapCache = {};
-				_.forEach(levelData.world, function(data) {
-					var key = data.key || 'empty-board',
-						name = data.name || 'Walls',
-						map = null;
+			// setup map
+			var map = this.add.tilemap('empty-board');
+			map.addTilesetImage('Walls','tiles');
+			map.setCollision(1);
+			this.events.onNextLevel.addOnce(map.destroy, map);
+
+			var layer = map.createLayer('Walls');
+			grid.forEach(function(val, x, y) {
+				if(val == 1) map.putTile(1, x, y, layer);
+			});
+
+			var builder = new ThreatBuilder(this.player);
+
+			//process the partials
+			_.forEach(partials, function(partial) {
+				_.forEach(partial.layers, function(name) {
 					
-					if(mapCache[key])
-						map = mapCache[key];
-					else {
-						map = new Phaser.Tilemap(this.game, key);
-						map.addTilesetImage('Walls','tiles');
-						map.setCollision(1);
-						this.events.onNextLevel.addOnce(map.destroy, map);
+				}, this);		
 
-						mapCache[key] = map;
-					}
+				partial.threats.call(builder);
+				_.forEach(builder.threats, this.threats.add, this.threats);
+			}, this);
 
-					var layer = map.createLayer(name);
-					if(data.hazard)
-						this.hazards.push(layer);
-					else
-						this.walls.push(layer);
-				}, this);
-			}
+			builder.start();
 
 			//place coins
-			if(_.isFunction(levelData.coins)) 
-				levelData.coins.call(this.coins)
-
-			//create threats
-			if(_.isFunction(levelData.threats)) {
-				var builder = new ThreatBuilder(this.player);
-				levelData.threats.call(builder);
-				_.forEach(builder.threats, this.threats.add, this.threats);
-				builder.start();
-			}
-
+			//if(_.isFunction(levelData.coins)) 
+			//	levelData.coins.call(this.coins)
 		},
 
 		nextLevel: function() {
 			this.game.level++;
 			this.events.onNextLevel.dispatch();
 
+			var generator = new LevelGenerator();
+
+			var partials = generator.generate();
+
 			//"procedurally" generate arena
-			this.createLevel(sample_level);
+			this.createLevel(partials, generator.grid);
 		}
 	});
 

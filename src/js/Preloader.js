@@ -27,7 +27,6 @@
 
 			//TODO this is a level preloader thing...
 			this.load.tilemap('empty-board', 'assets/tilemap/empty_board.json', null, Phaser.Tilemap.TILED_JSON);
-			this.load.tilemap('halls-open-top', 'assets/tilemap/southern_halls_open_top.json', null, Phaser.Tilemap.TILED_JSON);
 			this.load.image('tiles', 'assets/img/tiles.png');
 		},
 

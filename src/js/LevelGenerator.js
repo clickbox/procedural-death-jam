@@ -16,9 +16,9 @@
 			var partials = [],
 				iters = 0;
 
-			leveData.reset();			
+			levelData.reset();			
 			levelData.sections = [0, 1, 2, 3];
-			while(this.openSections.length) {
+			while(levelData.sections.length) {
 				if(iters > this.maxIters) break; 
 
 				levelData.search();
@@ -28,7 +28,7 @@
 
 					// check if the player runs into anything here...
 					if(this.checkPlayer()) {
-						levelData.sections = _.difference(this.openSections, candidate.usedSections);
+					levelData.sections = _.difference(levelData.sections, candidate.usedSections);
 						this.difficulty.current += candidate.difficulty;
 						levelData.difficulty.max = this.difficulty.target - this.difficulty.current;
 						partials.push(candidate);
@@ -49,6 +49,8 @@
 			// for() {
 			//
 			// }
+
+			return partials;
 		},
 
 		checkPlayer: function() {

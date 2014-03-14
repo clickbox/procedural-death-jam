@@ -49,6 +49,20 @@
 			this.fill(0, 0, 0, this.width, this.height);
 		},
 
+		forEach: function(fn, ctx, x, y, w, h) {
+			if(x === undefined) x = 0;
+			if(y === undefined) y = 0;
+			if(w === undefined) w = this.width;
+			if(h === undefined) h = this.height;
+			
+			for(var i = 0; i < this.width; i++) {
+				for(var j = 0; j < this.height; j++) {
+					var val = this.get(i, j);
+					fn.call(ctx, val, x, y);
+				}
+			}
+		},
+
 		test: function(check, x, y, w, h) {
 			for(var i = 0; i < this.width; i++) {
 				for(var j = 0; j < this.height; j++) {

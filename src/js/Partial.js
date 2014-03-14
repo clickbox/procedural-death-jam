@@ -1,8 +1,10 @@
 (function(exports) {
-	function Partial(usedSections, difficulty) {
+	function Partial(usedSections, difficulty, data) {
 		this.usedSections = usedSections;
 		this.difficulty = difficulty;
 		this._sections = [];
+		this.layers = data.world;
+		this.threats = data.threats;
 	}
 
 	Partial.prototype = {
