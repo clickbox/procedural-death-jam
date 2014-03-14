@@ -1,4 +1,6 @@
 (function(exports) {
+	
+
 	function FishGroup(game, dir, density) {
 		Phaser.Group.call(this, game);
 
@@ -23,7 +25,8 @@
 		this.on = true;
 	}
 
-	Util.override(FishGroup.prototype, 'add', function(object) {
+	FishGroup.prototype.spawn = function() {
+		var fish = 
 
 		function tryAdd(obj) {
 			var y = this.game.rnd.realInRange(this.top, this.bottom - obj.height),
@@ -34,9 +37,9 @@
 			}, this);
 
 			if(flag) {
+				obj.revive();
 				obj.body.x = this.safeDist - obj.width;
 				obj.body.y = y;
-				this._super(obj);
 				return true;
 			}
 			else 
@@ -47,6 +50,14 @@
 		for(var i = 0; i < 30 && !tryAdd(); i++) {}
 	}); 
 
+	FishGroup.prototype.update = function() {
+		if(this.on) {
+
+		}
+	}
+
+	exports.FishGroup = FishGroup;
+})(this);
 
 (function(exports) {
 	function Fish(game, start, dir, player) {

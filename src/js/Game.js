@@ -7,6 +7,10 @@
 		};
 	}
 
+var MIN_TRAIL_ALPHA = 0.40;
+	var MAX_TRAIL_ALPHA = 0.96;
+	var MAX_TRAIL_AT_SCORE = 200; 
+
 	Game.prototype = Object.create(FadingState.prototype);
 	Game.prototype.constructor = Game;
 
@@ -42,8 +46,8 @@
 			//create the player
 			this.player = new Player(game, 200, 200);
 			this.player.events.onKilled.add(function() {
-			this.time.events.add(2000, function() {
-					this.trail.visible = false;
+				this.trail.visible = false;
+				this.time.events.add(2000, function() {
 					this.fadeToBlack()
 						.onComplete.add(function() {
 							this.game.state.start('failure');
@@ -53,6 +57,7 @@
 			game.add.existing(this.player);
 
 			this.trail = new AlphaTrail(game, this.player);
+			this.trail.alpha = MIN_TRAIL_ALPHA;
 
 			this.nextLevel();
 
@@ -116,6 +121,7 @@
 				if(this.coins.countLiving() == 0) { // Last coin collected
 					this.nextLevel();
 				}
+				this.trail.alpha = this.math.linear(MIN_TRAIL_ALPHA, MAX_TRAIL_ALPHA, Math.min(1, this.game.score / MAX_TRAIL_AT_SCORE));
 			}, null, this);
 
 			this.trail.update();
@@ -186,7 +192,7 @@
 			this.events.onNextLevel.dispatch();
 
 			//"procedurally" generate arena
-			this.createLevel(sample_level2);
+			this.createLevel(sample_level);
 		}
 	});
 

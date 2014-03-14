@@ -18,6 +18,7 @@
 		this.body.x = x;
 		this.body.y = y;
 		this.body.collideWorldBounds = true;
+		this.body.immovable = true;
 
 		this.sounds = {
 			playerSpotted: game.add.audio('player-spotted'),
@@ -41,8 +42,8 @@
 
 	Arrow.prototype.update = function() {
 		if(this.state == 'asleep') {
-			var inRow = Math.abs(this.center.y - this.player.y) <= 10;
-			var inCol = Math.abs(this.center.x - this.player.x) <= 10;
+			var inRow = Math.abs(this.center.y - this.player.y) <= 20;
+			var inCol = Math.abs(this.center.x - this.player.x) <= 20;
 			if( (	inRow &&  
 					(
 						(this.facing == 'left' && this.center.x > this.player.x) ||
@@ -70,7 +71,7 @@
 
 	Arrow.prototype.wokenUp = function() {
 		//TODO check that the Arrow is still alive, etc
-
+		this.body.immovable = false;
 		this.animations.play('awake');
 	
 		switch(this.facing) {
@@ -85,6 +86,7 @@
 	}
 
 	Arrow.prototype.fallAsleep = function() {
+		this.body.immovable = true;
 		this.body.acceleration.setTo(0,0);
 		this.body.velocity.setTo(0,0);
 		this.animations.play('asleep');

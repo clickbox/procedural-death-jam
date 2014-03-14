@@ -13,7 +13,7 @@
 		sprites[1].visible = false;
 		this.sprites = sprites;
 
-		this.alpha = 0.75; //alpha above a certain level (95%) leaves artifacting, and will require periodici
+		this.alpha = 0.95; //alpha above a certain level (95%) leaves artifacting, and will require periodici
 						   // drops to a lower percent to help "clean" the back buffer
 		this.target = target;
 		this.visible = true;

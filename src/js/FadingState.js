@@ -8,7 +8,7 @@
 			if(fadein === undefined) fadein = 1000;
 
 			var fader = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'black'),
-			 	tween = this.add.tween(fader).to({ alpha: 0 }, fadein);
+			 	tween = this.add.tween(fader).to({ alpha: 0 }, fadein); //TODO use pause feature!
 
 			this.time.events.add(pause, tween.start, tween);
 
