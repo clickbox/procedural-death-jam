@@ -8,7 +8,6 @@
 		this.body.bounce.setTo(1, 1);
 		
 		this._initSpeed = Bouncer.speed[speed] || Bouncer.speed.slow;
-		if(this._initSpeed != Bouncer.speed.slow) console.log('speed is not slow!')
 		this.sounds = {
 			bounce: game.add.audio('bounce')
 		};

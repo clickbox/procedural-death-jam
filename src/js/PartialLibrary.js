@@ -1,11 +1,6 @@
 (function(exports) {
 	function PartialLibrary() {
-		this._partials = _(PartialLibrary.EMPTY)
-			.map(function(partial) { 
-				return partial.expand() 
-			})
-			.flatten()
-			.value();
+		this._partials = PartialLibrary.EMPTY.slice(); 
 
 		this.candidates = [];
 
@@ -19,9 +14,7 @@
 
 	PartialLibrary.prototype = {
 		add: function(template) {
-			//TODO add a partial template, exploding out 
-			// its possible generated templates
-			this._partials.push.apply(this._partials, template.expand());
+			this._partials.push(template);
 		},
 
 		ban: function(partial) {
@@ -68,50 +61,10 @@
 	};
 
 	// construct the EMPTY partials
-	var partial = null,
-		empty = [];
-
-	partial = new Partial([0], 0);
-	partial.addSection(Level.q0(), 0, 0);
-	partial.addThreats(0, _.noop);
-	//partial.addCoins(0, function() { this.col(80, 40, 200) });
-	partial.addCoins(0, function() { 
-		this.col(50, 50, 190);
-		this.row(50, 70, 190);
-	});
-	empty[0] = partial; 
-
-	partial = new Partial([1], 0);
-	partial.addSection(Level.q1(), 10, 0);
-	partial.addThreats(0, _.noop);
-	//partial.addCoins(0, function() { this.col(320, 40, 200) });
-	partial.addCoins(0, function() {
-		this.col(350, 50, 190);
-		this.row(50, 210, 350);
-	});
-	empty[1] = partial;
-
-	partial = new Partial([2], 0);
-	partial.addSection(Level.q2(), 0, 10);
-	partial.addThreats(0, _.noop);
-	//partial.addCoins(0, function() { this.col(80, 220, 360) });
-	partial.addCoins(0, function() {
-		this.col(50, 210, 350);
-		this.row(350, 50, 190);
-	});
-	empty[2] = partial;
-
-	partial = new Partial([3], 0);
-	partial.addSection(Level.q3(), 10, 10);
-	partial.addThreats(0, _.noop);
-	//partial.addCoins(0, function() { this.col(320, 220, 360) });
-	partial.addCoins(0, function() {
-		this.col(350, 210, 350);
-		this.row(350, 210, 350);
-	})
-	empty[3] = partial;
-
-	PartialLibrary.EMPTY = empty;
+	PartialLibrary.EMPTY = [];
+	for(var i = 0; i < 4; i++) {
+		PartialLibrary.EMPTY[i] = new Partial([i], 0);
+	}
 
 	exports.PartialLibrary = PartialLibrary;
 })(this);

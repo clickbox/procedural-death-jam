@@ -1,8 +1,6 @@
 (function(exports) {
 	function LevelGenerator(rnd) {
-		this.grid = new Grid(20, 20);
 		this.rnd = rnd; 
-
 		this.difficulty = {
 			current: 0,
 			target: 0
@@ -17,17 +15,18 @@
 				iters = 0;
 
 			levelData.reset();			
+			levelData.difficulty.target = this.difficulty.target;
+			
 			levelData.sections = [0, 1, 2, 3];
 			while(levelData.sections.length) {
 				if(iters > this.maxIters) break; 
 				levelData.search();
 				if(levelData.candidates.length) {
 					var candidate = this.pick(levelData.candidates);
-					candidate.render(this.grid);
 
 					// check if the player runs into anything here...
 					if(this.checkPlayer()) {
-					levelData.sections = _.difference(levelData.sections, candidate.usedSections);
+						levelData.sections = _.difference(levelData.sections, candidate.usedSections);
 						this.difficulty.current += candidate.difficulty;
 						levelData.difficulty.max = this.difficulty.target - this.difficulty.current;
 						partials.push(candidate);
@@ -45,11 +44,9 @@
 			}
 
 			// add empty partials for each section that isn't filled
-			// for() {
-			//
-			// }
-
-			//this.grid.print();
+			_.forEach(levelData.sections, function(q) {
+				partials.push(PartialLibrary.EMPTY[q]);
+			});
 
 			return partials;
 		},

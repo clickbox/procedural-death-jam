@@ -25,10 +25,13 @@
 
 			game.stage.backgroundColor = '#6495ED';
 			
+			// setup map
+			var map = this.add.tilemap('empty-board');
+			map.addTilesetImage('Walls','tiles');
+			map.setCollision(1);
+			this.walls = map.createLayer('Walls');
 
 			this.threats = game.add.group();
-
-			// create the coin group
 			this.coins = new CoinGroup(game);
 
 		 	this.sounds = {
@@ -96,19 +99,11 @@
 				threats = this.threats;
 
 			//player -> world
-			_.forEach(this.walls, function(wall) {
-				game.physics.collide(player, wall, player.collideWorld, null, player);
-				threats.forEach(function(threat) {
-					game.physics.collide(threat, wall, threat.collideWorld, threat.processWorld, threat);
-				});
+			game.physics.collide(player, this.walls, player.collideWorld, null, player);
+			threats.forEach(function(threat) {
+				game.physics.collide(threat, this.walls, threat.collideWorld, threat.processWorld, threat);
 			});
 
-			//TODO add back in hazard support?
-			/* _.forEach(this.hazard, function(hazard) {
-				game.physics.collide(player, hazard);
-				game.physics.collide(threats, hazard);
-			});*/
-			
 			//player -> threats
 			game.physics.collide(player, threats, player.collideThreat, null, player); //TODO make this work both ways?
 
@@ -142,36 +137,14 @@
 
 		createLevel: function(partials, grid) {
 			//clear existing data
-			_.forEach(this.walls, function(wall) {
-				if(wall.canvas) {
-					var ctx = wall.canvas.getContext('2d');
-					ctx.clearRect(0,0,400,400);
-				}
-			});
-			this.walls = [];
 			this.threats.removeAll();
 			this.coins.callAllExists('kill', false); //since we're keeping coins around
-
-			// setup map
-			var map = this.add.tilemap('empty-board');
-			map.addTilesetImage('Walls','tiles');
-			this.events.onNextLevel.addOnce(map.destroy, map);
-
-			var layer = map.createLayer('Walls');
-			grid.forEach(function(val, x, y) {
-				if(val == 1) map.putTile(1, x, y, layer);
-				if(val == 0) map.putTile(0, x, y, layer);
-			});
-
-			map.setCollision(1);
-			this.walls.push(layer);
 
 			var builder = new ThreatBuilder(this.player);
 
 			//process the partials
 			_.forEach(partials, function(partial) {
 				if(partial.threats) partial.threats.call(builder);
-				if(partial.coins) partial.coins.call(this.coins)
 			}, this);
 
 			_.forEach(builder.threats, this.threats.add, this.threats);
