@@ -15,9 +15,9 @@
 		
 		showScore.anchor.setTo(0.5, 0.5);
 		
-		this.fadeFromBlack(0, 750);
-		this.time.events.add(1500 + 750, function() {
-			this.fadeToBlack(0, 750)
+		this.fadeFromBlack(0, 400);
+		this.time.events.add(800, function() {
+			this.fadeToBlack(0, 200)
 				.onComplete.add(function() {
 					this.game.state.start('game');
 				}, this);

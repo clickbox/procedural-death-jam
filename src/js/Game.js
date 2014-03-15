@@ -21,6 +21,7 @@
 
 			game.level = -1;
 			game.score = 0;
+			this.difficulty = 0;
 
 			game.stage.backgroundColor = '#6495ED';
 			
@@ -141,6 +142,12 @@
 
 		createLevel: function(partials, grid) {
 			//clear existing data
+			_.forEach(this.walls, function(wall) {
+				if(wall.canvas) {
+					var ctx = wall.canvas.getContext('2d');
+					ctx.clearRect(0,0,400,400);
+				}
+			});
 			this.walls = [];
 			this.threats.removeAll();
 			this.coins.callAllExists('kill', false); //since we're keeping coins around
@@ -148,42 +155,38 @@
 			// setup map
 			var map = this.add.tilemap('empty-board');
 			map.addTilesetImage('Walls','tiles');
-			map.setCollision(1);
 			this.events.onNextLevel.addOnce(map.destroy, map);
 
 			var layer = map.createLayer('Walls');
 			grid.forEach(function(val, x, y) {
 				if(val == 1) map.putTile(1, x, y, layer);
+				if(val == 0) map.putTile(0, x, y, layer);
 			});
+
+			map.setCollision(1);
+			this.walls.push(layer);
 
 			var builder = new ThreatBuilder(this.player);
 
 			//process the partials
 			_.forEach(partials, function(partial) {
-				_.forEach(partial.layers, function(name) {
-					
-				}, this);		
-
-				partial.threats.call(builder);
-				_.forEach(builder.threats, this.threats.add, this.threats);
+				if(partial.threats) partial.threats.call(builder);
+				if(partial.coins) partial.coins.call(this.coins)
 			}, this);
 
+			_.forEach(builder.threats, this.threats.add, this.threats);
 			builder.start();
-
-			//place coins
-			//if(_.isFunction(levelData.coins)) 
-			//	levelData.coins.call(this.coins)
 		},
 
 		nextLevel: function() {
 			this.game.level++;
+			this.difficulty += 2;
 			this.events.onNextLevel.dispatch();
 
-			var generator = new LevelGenerator();
-
+			var generator = new LevelGenerator(this.rnd);
+			generator.difficulty.target = this.difficulty;
 			var partials = generator.generate();
 
-			//"procedurally" generate arena
 			this.createLevel(partials, generator.grid);
 		}
 	});

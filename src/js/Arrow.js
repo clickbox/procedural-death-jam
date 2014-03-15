@@ -14,7 +14,12 @@
 		this.player = player;
 
 		this.body.maxVelocity.setTo(Arrow.CHARGE_VEL, Arrow.CHARGE_VEL);
-		this.body.setRectangle(18, 32, 7, 0);
+		
+		if(facing == 'left' || facing == 'right') 
+			this.body.setRectangle(18, 32, 7, 0);
+		else
+			this.body.setRectangle(32, 18, 0, 7);
+
 		this.body.x = x;
 		this.body.y = y;
 		this.body.collideWorldBounds = true;
@@ -77,8 +82,8 @@
 		switch(this.facing) {
 			case 'left': this.body.acceleration.setTo(-1, 0); break;
 			case 'right': this.body.acceleration.setTo(1, 0); break;
-			case 'up': this.body.acceleration.setTo(0, 1);   break;
-			case 'down': this.body.acceleration.setTo(0, -1);  break;
+			case 'up': this.body.acceleration.setTo(0, -1);   break;
+			case 'down': this.body.acceleration.setTo(0, 1);  break;
 		}
 		this.body.acceleration.setMagnitude(Arrow.CHARGE_ACCEL);
 

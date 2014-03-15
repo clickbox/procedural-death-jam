@@ -1,7 +1,7 @@
 (function(exports) {
-	function LevelGenerator() {
+	function LevelGenerator(rnd) {
 		this.grid = new Grid(20, 20);
-		this.rnd = new Phaser.RandomDataGenerator();
+		this.rnd = rnd; 
 
 		this.difficulty = {
 			current: 0,
@@ -20,10 +20,9 @@
 			levelData.sections = [0, 1, 2, 3];
 			while(levelData.sections.length) {
 				if(iters > this.maxIters) break; 
-
 				levelData.search();
 				if(levelData.candidates.length) {
-					var candidate = this.rnd.pick(levelData.candidates);
+					var candidate = this.pick(levelData.candidates);
 					candidate.render(this.grid);
 
 					// check if the player runs into anything here...
@@ -50,11 +49,18 @@
 			//
 			// }
 
+			//this.grid.print();
+
 			return partials;
 		},
 
 		checkPlayer: function() {
 			return true; //TODO need to get this working...
+		},
+
+		pick: function(list) {
+			var vals = _(list).sortBy(_.property('difficulty')).reverse().value();
+			return this.rnd.weightedPick(vals);
 		},
 
 		reset: function() {

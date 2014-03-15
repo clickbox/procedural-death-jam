@@ -1,6 +1,71 @@
 (function(exports) {
+
+	exports.Level = {
+
+		q0: function() {
+			var grid = new Grid(10, 10);
+			grid.fill(1, 0, 0, 1, 10);
+			grid.fill(1, 0, 0, 10, 1);
+			return grid;
+		},
+
+		q1: function() {
+			var grid = new Grid(10, 10);
+			grid.fill(1, 0, 0, 10, 1);
+			grid.fill(1, 9, 0, 1, 10);
+			return grid;
+		},
+
+		q2: function() {
+			var grid = new Grid(10, 10);
+			grid.fill(1, 0, 0, 1, 10);
+			grid.fill(1, 0, 9, 10, 1);
+			return grid;
+		},
+
+		q3: function() {
+			var grid = new Grid(10, 10);
+			grid.fill(1, 0, 9, 10, 1);
+			grid.fill(1, 9, 0, 1, 10);
+			return grid;
+		},
+
+		th: function() {
+			var grid = new Grid(20, 10);
+			grid.fill(1, 0, 0, 20, 1);
+			grid.fill(1, 0, 0, 1, 10);
+			grid.fill(1, 19, 0, 1, 10);
+			return grid;
+		},	
+
+		bh: function() {
+			var grid = new Grid(20, 10);
+			grid.fill(1, 0, 0, 1, 10);
+			grid.fill(1, 19, 0, 1, 10);
+			grid.fill(1, 0, 19, 20, 1);
+			return grid;
+		},
+
+		lh: function() {
+			var grid = new Grid(10, 20);
+			grid.fill(1, 0,0,1,20);
+			grid.fill(1,0,0,10,1);
+			grid.fill(1,0,19,10,1);
+			return grid;
+		},
+
+		rh: function() {
+			var grid = new Grid(10, 20);
+			grid.fill(1,9,0,1,20);
+			grid.fill(1,0,0,10,1);
+			grid.fill(1,0,19,10,1);
+			return grid;
+		}
+	};
+
+/*
 	exports.sample_level = {
-		world: [{
+		world: [
 			map: 'empty-board',
 			layer: 'Walls',
 			hazard: false
@@ -71,5 +136,5 @@
 			this.col(40, 200, 340);
 			this.row(200, 60, 340);
 		}
-	}
+	}*/
 })(this);

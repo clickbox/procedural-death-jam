@@ -58,7 +58,7 @@
 			for(var i = 0; i < this.width; i++) {
 				for(var j = 0; j < this.height; j++) {
 					var val = this.get(i, j);
-					fn.call(ctx, val, x, y);
+					fn.call(ctx, val, x + i, y + j);
 				}
 			}
 		},
@@ -66,7 +66,7 @@
 		test: function(check, x, y, w, h) {
 			for(var i = 0; i < this.width; i++) {
 				for(var j = 0; j < this.height; j++) {
-					var val = this.get(i, j);
+					var val = this.get(x + i, y + j);
 					if( check(val) ) return true;
 				}
 			}

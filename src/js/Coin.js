@@ -20,5 +20,11 @@
 	Coin.prototype = Object.create(Phaser.Sprite.prototype);
 	Coin.prototype.constructor = Coin;
 
+	Coin.prototype.update = function() {
+		if(this.x == 0 && this.y == 0) {
+			this.kill();
+		}
+	}
+
 	exports.Coin = Coin;
 })(this);
