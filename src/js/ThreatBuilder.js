@@ -1,7 +1,8 @@
 (function(exports) {
 
-	function ThreatBuilder(player) {
+	function ThreatBuilder(player, rnd) {
 		this.player = player;
+		this.rnd = rnd;
 		this.game = player.game;
 		this.threats = [];
 	}
@@ -13,15 +14,25 @@
 			return arrow;
 		},
 
-		bouncer: function(x, y) {
-			var bouncer = new Bouncer(this.game, x, y);
+		bouncer: function(x, y, speed) {
+			var bouncer = new Bouncer(this.game, x, y, speed);
+			this.threats.push(bouncer);
+			return bouncer;
+		},
+
+		bigBouncer: function(x, y) {
+			var bouncer = new BigBouncer(this.game, x, y);
 			this.threats.push(bouncer);
 			return bouncer;
 		},
 
 		//TODO make this enemy less bland-- and also make it work!
 		chaser: function(x, y) {
-			var chaser = new Chaser(this.game, x, y, this.player);
+			var chaser = new Chaser(this.game, x, y, this.player, 
+				this.rnd.integerInRange(300, 1500), // the pause
+				2000,						   // fast
+				500						   // slow
+			);
 			this.threats.push(chaser);
 			return chaser;
 		},

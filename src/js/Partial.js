@@ -1,8 +1,10 @@
 (function(exports) {
-	function Partial(usedSections, difficulty, threats) {
+	function Partial(id, usedSections, difficulty, threats, coins) {
+		this.id = id;
 		this.usedSections = usedSections;
 		this.difficulty = difficulty;
-		this._threats = [];
+		this.threats = threats || _.noop;
+		this.coins = coins || _.noop;
 	}
 
 	exports.Partial = Partial;

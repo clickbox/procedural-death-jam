@@ -47,8 +47,8 @@
 
 	Arrow.prototype.update = function() {
 		if(this.state == 'asleep') {
-			var inRow = Math.abs(this.center.y - this.player.y) <= 20;
-			var inCol = Math.abs(this.center.x - this.player.x) <= 20;
+			var inRow = Math.abs(this.center.y - this.player.y) <= 22;
+		var inCol = Math.abs(this.center.x - this.player.x) <= 22;
 			if( (	inRow &&  
 					(
 						(this.facing == 'left' && this.center.x > this.player.x) ||

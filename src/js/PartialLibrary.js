@@ -39,10 +39,10 @@
 				 	})
 				})
 				// remove all candidates with a difficulty that is too high
-				.filter(function(partial) {
-				 	return partial.difficulty <= difficulty.max &&
-				 		   partial.difficulty >= difficulty.min;
-				})
+				//.filter(function(partial) {
+				// 	return partial.difficulty <= difficulty.max &&
+				// 		   partial.difficulty >= difficulty.min;
+				//})
 				// remove anything on the banned list
 				.difference(this.banned)
 				.value();
@@ -63,7 +63,7 @@
 	// construct the EMPTY partials
 	PartialLibrary.EMPTY = [];
 	for(var i = 0; i < 4; i++) {
-		PartialLibrary.EMPTY[i] = new Partial([i], 0);
+		PartialLibrary.EMPTY[i] = new Partial('Q' + i + ' empty', [i], [0,0,0,0]);
 	}
 
 	exports.PartialLibrary = PartialLibrary;

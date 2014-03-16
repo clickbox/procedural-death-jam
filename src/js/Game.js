@@ -7,7 +7,7 @@
 		};
 	}
 
-	var MIN_TRAIL_ALPHA = 0.45,
+	var MIN_TRAIL_ALPHA = 0.47,
 		MAX_TRAIL_ALPHA = 0.96,
 		MAX_TRAIL_AT_SCORE = 200; // this is low balling  it a bit
 								  // a linear easing is probably not right for this...
@@ -21,7 +21,10 @@
 
 			game.level = -1;
 			game.score = 0;
-			this.difficulty = 0;
+
+			this.generator = new LevelGenerator(this.math, this.rnd);
+			this.generator.difficulty.min = 0;
+			this.generator.difficulty.max = 0.5; 
 
 			game.stage.backgroundColor = '#6495ED';
 			
@@ -29,6 +32,7 @@
 			var map = this.add.tilemap('empty-board');
 			map.addTilesetImage('Walls','tiles');
 			map.setCollision(1);
+
 			this.walls = map.createLayer('Walls');
 
 			this.threats = game.add.group();
@@ -52,7 +56,7 @@
 			this.player = new Player(game, 200, 200);
 			this.player.events.onKilled.add(function() {
 				this.trail.visible = false;
-				this.time.events.add(2000, function() {
+			this.time.events.add(1200, function() {
 					this.fadeToBlack()
 						.onComplete.add(function() {
 							this.game.state.start('failure');
@@ -102,7 +106,7 @@
 			game.physics.collide(player, this.walls, player.collideWorld, null, player);
 			threats.forEach(function(threat) {
 				game.physics.collide(threat, this.walls, threat.collideWorld, threat.processWorld, threat);
-			});
+			}, this);
 
 			//player -> threats
 			game.physics.collide(player, threats, player.collideThreat, null, player); //TODO make this work both ways?
@@ -140,11 +144,12 @@
 			this.threats.removeAll();
 			this.coins.callAllExists('kill', false); //since we're keeping coins around
 
-			var builder = new ThreatBuilder(this.player);
+			var builder = new ThreatBuilder(this.player, this.rnd);
 
 			//process the partials
 			_.forEach(partials, function(partial) {
 				if(partial.threats) partial.threats.call(builder);
+				if(partial.coins) partial.coins.call(this.coins);
 			}, this);
 
 			_.forEach(builder.threats, this.threats.add, this.threats);
@@ -153,14 +158,14 @@
 
 		nextLevel: function() {
 			this.game.level++;
-			this.difficulty += 2;
+			if(this.game.level % 2)
+				this.generator.difficulty.min += 0.25;
+			this.generator.difficulty.max += 0.25;
+
 			this.events.onNextLevel.dispatch();
 
-			var generator = new LevelGenerator(this.rnd);
-			generator.difficulty.target = this.difficulty;
-			var partials = generator.generate();
-
-			this.createLevel(partials, generator.grid);
+			var partials = this.generator.generate();
+			this.createLevel(partials);
 		}
 	});
 

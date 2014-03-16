@@ -10,6 +10,7 @@
 	CoinGroup.prototype.constructor = CoinGroup;
 
 	CoinGroup.prototype.row = function(y, startx, endx, gap) {
+		//console.log('row(' + y +', '+ startx + ', ' + endx + ', ' + gap + ')' );
 		if(gap === undefined) gap = CoinGroup.DEFAULT_GAP;
 		if(startx > endx) {
 			var tmp = endx;
@@ -23,6 +24,7 @@
 	}
 
 	CoinGroup.prototype.col = function(x, starty, endy, gap) {
+		//console.log('col(' + x +', '+ starty + ', ' + endy + ', ' + gap + ')' );
 		if(gap === undefined) gap = CoinGroup.DEFAULT_GAP;
 		if(starty > endy) {
 			var tmp = endy;
@@ -57,13 +59,8 @@
 	//TODO maybe add some logic to avoid stacking coins on top of each other?
 	CoinGroup.prototype.coinAt = function(x, y) {
 		var coin = this.getFirstExists(false);
-		if(coin) {
-			coin.revive();
-			coin.body.x = x;
-			coin.body.y = y;
-		}
-		else 
-			this.add(new Coin(this.game, x, y));
+		if(coin) coin.reset(x, y);
+		else this.add(new Coin(this.game, x, y));
 	}
 
 	exports.CoinGroup = CoinGroup;
